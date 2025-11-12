@@ -275,10 +275,10 @@
             };
 
             try {
-                // URL del webhook de n8n - REEMPLAZA CON TU URL REAL
-                const n8nWebhookUrl = 'https://pro-001-n8n.adnmou.easypanel.host/webhook-test/formulario-vulngithub';
-
-                      
+                const n8nWebhookUrl = 'https://pro-001-n8n.adnmou.easypanel.host/webhook-test/formulario-vuln';
+    
+                console.log('Enviando datos:', data);
+    
                 const response = await fetch(n8nWebhookUrl, {
                     method: 'POST',
                     headers: {
@@ -287,18 +287,22 @@
                     body: JSON.stringify(data)
                 });
 
+                console.log('Respuesta status:', response.status);
+                console.log('Respuesta ok:', response.ok);
+
                 if (response.ok) {
+                    const responseData = await response.json();
+                    console.log('Respuesta del servidor:', responseData);
                     successMessage.style.display = 'block';
                     document.getElementById('automationForm').reset();
-                    
-                    // Scroll to success message
                     successMessage.scrollIntoView({ behavior: 'smooth' });
-                    
                 } else {
-                    throw new Error(`Error del servidor: ${response.status}`);
+                    const errorText = await response.text();
+                    console.error('Error del servidor:', errorText);
+                    throw new Error(`Error del servidor: ${response.status} - ${errorText}`);
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error completo:', error);
                 errorMessage.style.display = 'block';
                 errorMessage.scrollIntoView({ behavior: 'smooth' });
             } finally {
