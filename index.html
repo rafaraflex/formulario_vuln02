@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud de Servicios - Automatización</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #dbeafe;
+            --accent: #f59e0b;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .form-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .checkbox-item:hover {
+            border-color: var(--primary);
+            background-color: var(--secondary);
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .checkbox-item label {
+            margin: 0;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        button {
+            background: var(--primary);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #1d4ed8;
+        }
+        
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            color: var(--primary);
+        }
+        
+        .success-message {
+            display: none;
+            background: var(--secondary);
+            color: var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .error-message {
+            display: none;
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #dc2626;
+        }
+        
+        .field-error {
+            color: #dc2626;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        input:invalid {
+            border-color: #dc2626;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1 style="text-align: center; color: var(--primary); margin-bottom: 30px;">
+            🚀 Solicitud de Servicios de Automatización
+        </h1>
+        
+        <form id="automationForm">
+            <!-- Campo Nombre -->
+            <div class="form-group">
+                <label for="nombre" class="required">Nombre del solicitante</label>
+                <input type="text" id="nombre" name="nombre" required 
+                       placeholder="Ingresa tu nombre completo"
+                       pattern="[A-Za-zÁáÉéÍíÓóÚúÑñ\s]{2,50}"
+                       title="El nombre debe contener solo letras y espacios (2-50 caracteres)">
+                <div class="field-error" id="nombreError">
+                    Por favor ingresa un nombre válido (solo letras y espacios)
+                </div>
+            </div>
+            
+            <!-- Campo Correo Electrónico -->
+            <div class="form-group">
+                <label for="email" class="required">Correo electrónico</label>
+                <input type="email" id="email" name="email" required 
+                       placeholder="ejemplo@corporacion.com"
+                       pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                       title="Por favor ingresa un correo electrónico válido">
+                <div class="field-error" id="emailError">
+                    Por favor ingresa un correo electrónico válido
+                </div>
+            </div>
+            
+            <!-- Campo CVE -->
+            <div class="form-group">
+                <label for="cve" class="required">CVE (Clave Única)</label>
+                <input type="text" id="cve" name="cve" required 
+                       placeholder="Ejemplo: CVE-1990-34569"
+                       pattern="[A-Za-z]{3}-[0-9]{4}-[0-9]{3,6}"
+                       title="Formato: 3 letras + 4 dígitos + 3-6 dígitos (ejemplo: CVE-1990-34569)">
+                <div class="field-error" id="cveError">
+                    El formato debe ser: 3 letras + 4 dígitos + 3-6 dígitos (ejemplo: CVE-1990-34569)
+                </div>
+            </div>
+            
+            <!-- Opciones de Automatización -->
+            <div class="form-group">
+                <label class="required">Selecciona las opciones de automatización</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="dep_option" value="Ansible" id="ansible">
+                        <label for="ansible">🔄 Ansible</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="dep_option" value="Packer" id="packer">
+                        <label for="packer">📦 Packer</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="dep_option" value="manual" id="manual">
+                        <label for="manual">👨‍💼 Manual</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" name="dep_option" value="Ansible Automation Platform" id="aap">
+                        <label for="aap">🏢 Ansible Automation Platform</label>
+                    </div>
+                </div>
+                <div class="field-error" id="depOptionError">
+                    Por favor selecciona al menos una opción de automatización
+                </div>
+            </div>
+            
+            <!-- Botón de envío -->
+            <button type="submit" id="submitBtn">
+                📨 Enviar Solicitud
+            </button>
+            
+            <div class="loading" id="loading">
+                <p>Procesando tu solicitud...</p>
+            </div>
+        </form>
+        
+        <div id="successMessage" class="success-message">
+            <h3>✅ ¡Solicitud Enviada Exitosamente!</h3>
+            <p>Hemos recibido tu solicitud de servicios de automatización. Te contactaremos pronto para continuar con el proceso.</p>
+        </div>
+        
+        <div id="errorMessage" class="error-message">
+            <p>❌ Error al enviar el formulario. Por favor, verifica los datos e intenta nuevamente.</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('automationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!validateForm()) {
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Ocultar mensajes anteriores
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            
+            // Mostrar loading
+            submitBtn.style.display = 'none';
+            loading.style.display = 'block';
+            
+            const formData = new FormData(this);
+            const selectedOptions = formData.getAll('dep_option');
+            
+            const data = {
+                nombre: formData.get('nombre').trim(),
+                email: formData.get('email').trim(),
+                cve: formData.get('cve').trim(),
+                dep_option: selectedOptions,
+                timestamp: new Date().toISOString(),
+                fuente: 'formulario_automatizacion',
+                url_origen: window.location.href
+            };
+
+            try {
+                // URL del webhook de n8n - REEMPLAZA CON TU URL REAL
+                const n8nWebhookUrl = 'https://pro-001-n8n.adnmou.easypanel.host/webhook-test/formulario-vulngithub';
+
+                      
+                const response = await fetch(n8nWebhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    successMessage.style.display = 'block';
+                    document.getElementById('automationForm').reset();
+                    
+                    // Scroll to success message
+                    successMessage.scrollIntoView({ behavior: 'smooth' });
+                    
+                } else {
+                    throw new Error(`Error del servidor: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                errorMessage.style.display = 'block';
+                errorMessage.scrollIntoView({ behavior: 'smooth' });
+            } finally {
+                submitBtn.style.display = 'block';
+                loading.style.display = 'none';
+            }
+        });
+
+        // Función de validación del formulario
+        function validateForm() {
+            let isValid = true;
+            
+            // Validar nombre
+            const nombre = document.getElementById('nombre');
+            const nombreError = document.getElementById('nombreError');
+            if (!nombre.checkValidity()) {
+                nombreError.style.display = 'block';
+                isValid = false;
+            } else {
+                nombreError.style.display = 'none';
+            }
+            
+            // Validar email
+            const email = document.getElementById('email');
+            const emailError = document.getElementById('emailError');
+            if (!email.checkValidity()) {
+                emailError.style.display = 'block';
+                isValid = false;
+            } else {
+                emailError.style.display = 'none';
+            }
+            
+            // Validar CVE
+            const cve = document.getElementById('cve');
+            const cveError = document.getElementById('cveError');
+            if (!cve.checkValidity()) {
+                cveError.style.display = 'block';
+                isValid = false;
+            } else {
+                cveError.style.display = 'none';
+            }
+            
+            // Validar que al menos una opción esté seleccionada
+            const depOptions = document.querySelectorAll('input[name="dep_option"]:checked');
+            const depOptionError = document.getElementById('depOptionError');
+            if (depOptions.length === 0) {
+                depOptionError.style.display = 'block';
+                isValid = false;
+            } else {
+                depOptionError.style.display = 'none';
+            }
+            
+            return isValid;
+        }
+
+        // Validación en tiempo real
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('blur', function() {
+                validateField(this);
+            });
+            
+            input.addEventListener('input', function() {
+                // Ocultar error mientras el usuario escribe
+                const errorElement = document.getElementById(this.id + 'Error');
+                if (errorElement) {
+                    errorElement.style.display = 'none';
+                }
+            });
+        });
+
+        function validateField(field) {
+            const errorElement = document.getElementById(field.id + 'Error');
+            if (!field.checkValidity()) {
+                errorElement.style.display = 'block';
+            } else {
+                errorElement.style.display = 'none';
+            }
+        }
+
+        // Validar checkboxes en tiempo real
+        document.querySelectorAll('input[name="dep_option"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const depOptions = document.querySelectorAll('input[name="dep_option"]:checked');
+                const depOptionError = document.getElementById('depOptionError');
+                if (depOptions.length === 0) {
+                    depOptionError.style.display = 'block';
+                } else {
+                    depOptionError.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
